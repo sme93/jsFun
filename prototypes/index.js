@@ -27,21 +27,27 @@ const kittyPrompts = {
 
     // Return an array of just the names of kitties who are orange e.g.
     // ['Tiger', 'Snickers']
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+
+    const result = kitties.reduce((arrayOfCatNames, kitty) => {
+      if (kitty.color === 'orange') {
+        arrayOfCatNames.push(kitty.name);
+      }
+      return arrayOfCatNames;
+    }, []);
     return result;
 
     // Annotation:
-    // Write your annotation here as a comment
+    // use reduce to return an array of orange kitties names
   },
 
   sortByAge() {
     // Sort the kitties by their age
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = kitties.sort((kitty1, kitty2) => kitty2.age - kitty1.age);
     return result;
 
     // Annotation:
-    // Write your annotation here as a comment
+    // sort kitty objects by 8 decreasing to 1
   },
 
   growUp() {
@@ -58,7 +64,10 @@ const kittyPrompts = {
     // },
     // ...etc]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = kitties.map(kitty => {
+      const newKitty = { ...kitty, age: kitty.age + 2 };
+      return newKitty;
+    });
     return result;
   }
 };
@@ -89,12 +98,27 @@ const clubPrompts = {
     //   Pam: ['Drama', 'Art', 'Chess'],
     //   ...etc
     // }
+    const members = clubs.reduce((acc, club) => {
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
-    return result;
+      return [...acc, ...club.members];
+    }, []);
+
+    const memberObject = members.reduce((acc, member) => {
+      return { ...acc, [member]: [] };
+    }, {});
+    Object.keys(memberObject).forEach(member => {
+      clubs.forEach(club => {
+        if (club.members.includes(member)) {
+          memberObject[member].push(club.club);
+        }
+      });
+    });
+    
+    return memberObject;
 
     // Annotation:
-    // Write your annotation here as a comment
+    // create one object - reduce
+    // people name as key - array of clubs as value
   }
 };
 
@@ -126,11 +150,16 @@ const modPrompts = {
     //   { mod: 4, studentsPerInstructor: 8 }
     // ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = mods.map(mod => {
+      const newMod = {mod: mod.mod, 
+        studentsPerInstructor: (mod.students / mod.instructors)};
+      return newMod;
+    });
     return result;
 
     // Annotation:
-    // Write your annotation here as a comment
+    // get average of students per instructor for each mod
+    // return array same length and shape as original - map
   }
 };
 
@@ -161,11 +190,16 @@ const cakePrompts = {
     //    ..etc
     // ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = cakes.map(cake => {
+      return {
+        flavor:cake.cakeFlavor,
+        inStock:cake.inStock,
+      };
+    });
     return result;
 
     // Annotation:
-    // Write your annotation here as a comment
+    //
   },
 
   onlyInStock() {
@@ -189,22 +223,29 @@ const cakePrompts = {
     // ..etc
     // ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = cakes.filter(cake => {
+      if (cake.inStock >= 1) {
+        return cake;
+      }
+    });
     return result;
 
     // Annotation:
-    // Write your annotation here as a comment
+    // filter
   },
 
   totalInventory() {
     // Return the total amount of cakes in stock e.g.
     // 59
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = cakes.reduce((acc, cake) => {
+      
+      return acc + cake.inStock;
+    }, 0);
     return result;
 
     // Annotation:
-    // Write your annotation here as a comment
+    //reduce
   },
 
   allToppings() {
@@ -212,11 +253,19 @@ const cakePrompts = {
     // every cake in the dataset e.g.
     // ['dutch process cocoa', 'toasted sugar', 'smoked sea salt', 'berries', ..etc]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
-    return result;
+    const result = cakes.reduce((arrayofCakes, cake) => {
+      arrayofCakes = arrayofCakes.concat(cake.toppings);
+      
+      return arrayofCakes;
+
+    }, []);
+
+    return [...new Set(result)];
 
     // Annotation:
-    // Write your annotation here as a comment
+    //step zero - google for how to reduce arrays of arrays (flat map)
+    //step one - array of all the toppings - probably map, maybe reduce
+    //step two - remove duplicates - google
   },
 
   groceryList() {
@@ -230,11 +279,26 @@ const cakePrompts = {
     //    ...etc
     // }
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const toppings = cakes.reduce((acc, cake) => {
+      return acc.concat(cake.toppings);
+    }, []);
+    // const toppings = cakes.reduce((acc, cake) => {
+    //   return [...acc, cake.toppings];
+    // }, []);
+   
+    const result = toppings.reduce((acc, topping) => {
+      if (!acc[topping]) {
+        acc[topping] = 1;
+      } else {
+        acc[topping]++;
+      }
+      return acc;
+    }, {});
     return result;
 
     // Annotation:
-    // Write your annotation here as a comment
+    // step one - reduce all toppings into object
+    // step two - if key exists in object, increment it's count, otherwise create it with one
   }
 };
 
@@ -265,11 +329,16 @@ const classPrompts = {
     //   { roomLetter: 'G', program: 'FE', capacity: 29 }
     // ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = classrooms.filter(room => {
+      if (room.program === 'FE') {
+        return room;
+      }
+    });
     return result;
 
     // Annotation:
-    // Write your annotation here as a comment
+    // use filter - you don't need to push into an array, just return
+    //what you want to keep inside the array (FILTER)
   },
 
   totalCapacities() {
@@ -280,17 +349,26 @@ const classPrompts = {
     //   beCapacity: 96
     // }
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = classrooms.reduce((acc, room) => {
+      if (room.program === 'FE') {
+        acc.feCapacity = acc.feCapacity + room.capacity;
+      } else {
+        acc.beCapacity += room.capacity;
+      }
+      return acc;
+    }, {feCapacity: 0, beCapacity: 0});
     return result;
 
     // Annotation:
-    // Write your annotation here as a comment
+    // return an object
+    // create new keys for feC and beC 
+    //increment them
   },
 
   sortByCapacity() {
     // Return the array of classrooms sorted by their capacity (least capacity to greatest)
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = classrooms.sort((a, b) => a.capacity - b.capacity);
     return result;
 
     // Annotation:
@@ -317,11 +395,15 @@ const bookPrompts = {
     //   'Catch-22', 'Treasure Island']
 
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = books.reduce((acc, book) => {
+      if (book.genre != 'Horror' && book.genre != 'True Crime') {
+        acc.push(book.title);
+      }
+      return acc;
+    }, []);
     return result;
 
-    // Annotation:
-    // Write your annotation here as a comment
+    // return array - map ....?
 
   },
   getNewBooks() {
@@ -332,10 +414,22 @@ const bookPrompts = {
     //  { title: 'Life of Pi', year: 2001 },
     //  { title: 'The Curious Incident of the Dog in the Night-Time', year: 2003 }]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const filterResult = books.filter(book => {
+      if (book.published >= 1990 && book.published <= 2010) {
+        return book;
+      }
+    });
+    const result = filterResult.map(book => {
+      return {
+        title: book.title,
+        year: book.published,
+      };
+    });
+    
     return result;
 
-    // Annotation:
+    // Annotation:books.filter(book => {
+  
     // Write your annotation here as a comment
   }
 
@@ -355,11 +449,14 @@ const weatherPrompts = {
     // return an array of all the average temperatures. Eg:
     // [ 40, 40, 44.5, 43.5, 57, 35, 65.5, 62, 14, 46.5 ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = weather.map(location => {
+      const { high, low } = location.temperature;
+      return ((high + low) / 2);
+    });
     return result;
 
     // Annotation:
-    // Write your annotation here as a comment
+    // 
   },
 
   findSunnySpots() {
@@ -368,12 +465,20 @@ const weatherPrompts = {
     // [ 'Atlanta, Georgia is sunny.',
     // 'New Orleans, Louisiana is sunny.',
     // 'Raleigh, North Carolina is mostly sunny.' ]
+    const sunnySpots = weather.filter(place => {
+      if (place.type.includes('sunny')) {
+        return place;
+      }
+    });
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = sunnySpots.map(place => {
+      return `${place.location} is ${place.type}.`; 
+    });
     return result;
 
     // Annotation:
-    // Write your annotation here as a comment
+    // filter by type includes sunny - 
+    //turn into array of location and type with 'is' - map 
   },
 
   findHighestHumidity() {
@@ -385,11 +490,12 @@ const weatherPrompts = {
     //   temperature: { high: 49, low: 38 }
     // }
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
-    return result;
+    const result = weather.sort((a, b) => b.humidity - a.humidity);
+    return result[0];
 
     // Annotation:
-    // Write your annotation here as a comment
+    // Go through each location, check humidity - return one location
+    //return object - sort by humidity
 
   }
 };
@@ -412,11 +518,19 @@ const nationalParksPrompts = {
     //   parksVisited: ["Rocky Mountain", "Acadia", "Zion"]
     //}
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = nationalParks.reduce((acc, park) => {
+      if (park.visited) {
+        acc.parksVisited.push(park.name);
+      } else {
+        acc.parksToVisit.push(park.name);
+      }
+      return acc;
+    }, {parksToVisit: [], parksVisited: []});
     return result;
 
     // Annotation:
-    // Write your annotation here as a comment
+    // go through parks, make an object with two arrays
+    //if visited true - one array, if false, other array
   },
 
   getParkInEachState() {
@@ -429,7 +543,9 @@ const nationalParksPrompts = {
     // { Florida: 'Everglades' } ]
 
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = nationalParks.map(park => {
+      return {[park.location]: park.name,};
+    });
     return result;
 
     // Annotation:
@@ -452,8 +568,10 @@ const nationalParksPrompts = {
     //   'backpacking',
     //   'rock climbing' ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
-    return result;
+    const result = nationalParks.reduce((acc, park) => {
+      return [...acc, ...park.activities];
+    }, []);
+    return [...new Set(result)];
 
     // Annotation:
     // Write your annotation here as a comment
@@ -479,11 +597,14 @@ const breweryPrompts = {
     // Return the total beer count of all beers for every brewery e.g.
     // 40
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = breweries.reduce((acc, brewery) => {
+      return acc += brewery.beers.length;
+    }, 0);
     return result;
 
     // Annotation:
-    // Write your annotation here as a comment
+    // total = reduce
+    // total beer count - number of objects in beer array 
   },
 
   getBreweryBeerCount() {
@@ -495,10 +616,12 @@ const breweryPrompts = {
     // ...etc.
     // ]
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
+    const result = breweries.map(brewery => {
+      return {name: brewery.name, beerCount: brewery.beers.length};
+    });
     return result;
 
-    // Annotation:
+    // Annotation: return array of objects - brewery name and beers.length
     // Write your annotation here as a comment
   },
 
@@ -507,10 +630,16 @@ const breweryPrompts = {
     // e.g.
     // { name: 'Barrel Aged Nature\'s Sweater', type: 'Barley Wine', abv: 10.9, ibu: 40 }
 
-    const result = 'REPLACE WITH YOUR RESULT HERE';
-    return result;
+    const allBeers = breweries.reduce((acc, brewery) => {
+      
+      return [...acc, ...brewery.beers];
+    }, []);
+      
+    const result = allBeers.sort((a, b) => b.abv - a.abv);
+    
+    return result[0];
 
-    // Annotation:
+    // Annotation: one result - reduce to get the abv
     // Write your annotation here as a comment
   }
 };
