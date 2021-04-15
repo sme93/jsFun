@@ -106,6 +106,7 @@ const clubPrompts = {
     const memberObject = members.reduce((acc, member) => {
       return { ...acc, [member]: [] };
     }, {});
+    
     Object.keys(memberObject).forEach(member => {
       clubs.forEach(club => {
         if (club.members.includes(member)) {
