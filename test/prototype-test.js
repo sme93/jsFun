@@ -71,7 +71,7 @@ describe('PROTOTYPES', () => {
     });
   });
   
-  describe.only('Club Prompts', () => {
+  describe('Club Prompts', () => {
     it('membersBelongingToClubs', () => {
       const e = clubPrompts.membersBelongingToClubs({
         Louisa: ['Drama', 'Art'],
@@ -414,7 +414,7 @@ describe('PROTOTYPES', () => {
     });
   });
   
-  describe('Turing Prompts', () => {
+  describe.only('Turing Prompts', () => {
     it('studentsForEachInstructor', () => {
       const e = turingPrompts.studentsForEachInstructor();
 
